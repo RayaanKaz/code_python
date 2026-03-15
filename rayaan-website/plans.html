@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upcoming — Rayaan</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── Drop countdown card ── */
+    .next-drop {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 56px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 80px;
+    }
+    .next-drop::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    }
+    .next-drop .orb { width: 400px; height: 400px; }
+    .next-drop .orb-purple { top: -200px; right: -100px; }
+    .next-drop .orb-pink   { bottom: -200px; left: -100px; }
+
+    .next-drop-inner { position: relative; z-index: 1; }
+    .live-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(168,85,247,0.12);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 0.78rem;
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 28px;
+    }
+    .live-pill .dot {
+      width: 7px; height: 7px; background: var(--accent2); border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.3; transform: scale(0.6); }
+    }
+
+    .next-drop h2 { font-size: clamp(2rem, 5vw, 3.5rem); margin-bottom: 16px; }
+    .next-drop .nd-sub { color: var(--muted); max-width: 480px; margin: 0 auto 36px; }
+
+    .countdown {
+      display: flex; justify-content: center; gap: 24px;
+      margin-bottom: 36px;
+    }
+    .cd-box {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 24px;
+      min-width: 80px;
+    }
+    .cd-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .cd-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+
+    /* ── Projects list ── */
+    .projects-list {
+      display: flex; flex-direction: column; gap: 24px;
+    }
+
+    .project-row {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 36px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 28px;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .project-row:hover {
+      border-color: var(--accent);
+      box-shadow: 0 8px 40px var(--glow);
+      transform: translateX(4px);
+    }
+
+    .project-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.4rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .project-info .project-type {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .project-info h3 { font-size: 1.15rem; margin-bottom: 6px; }
+    .project-info p  { color: var(--muted); font-size: 0.88rem; }
+
+    .status-badge {
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+    .status-soon       { background: rgba(168,85,247,0.12); border: 1px solid rgba(168,85,247,0.3); color: var(--accent); }
+    .status-production { background: rgba(236,72,153,0.12); border: 1px solid rgba(236,72,153,0.3); color: var(--accent2); }
+    .status-planned    { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--muted); }
+    .status-tba        { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--muted); }
+
+    /* ── Vision board ── */
+    .vision-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-top: 50px;
+    }
+    .vision-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 34px;
+      transition: border-color 0.2s;
+    }
+    .vision-card:hover { border-color: var(--accent); }
+    .vision-card .v-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+    .vision-card h4 { margin-bottom: 10px; font-size: 1.05rem; }
+    .vision-card p  { color: var(--muted); font-size: 0.88rem; line-height: 1.65; }
+
+    /* ── Newsletter / notify ── */
+    .notify-bar {
+      background: linear-gradient(135deg, rgba(168,85,247,0.15), rgba(236,72,153,0.1));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 48px;
+      text-align: center;
+      margin-top: 80px;
+    }
+    .notify-bar h3 { margin-bottom: 10px; }
+    .notify-bar p  { color: var(--muted); margin-bottom: 28px; }
+    .notify-form { display: flex; gap: 12px; max-width: 440px; margin: 0 auto; }
+    .notify-input {
+      flex: 1;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 12px 20px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .notify-input::placeholder { color: var(--muted); }
+    .notify-input:focus { border-color: var(--accent); }
+
+    @media (max-width: 768px) {
+      .project-row { grid-template-columns: 1fr; gap: 16px; }
+      .project-num { display: none; }
+      .countdown { gap: 12px; }
+      .cd-box { min-width: 60px; padding: 12px 16px; }
+      .cd-num { font-size: 1.6rem; }
+      .vision-grid { grid-template-columns: 1fr; }
+      .notify-form { flex-direction: column; }
+      .next-drop { padding: 36px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">RAY<span>AAN</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="music.html">Music</a></li>
+      <li><a href="plans.html">Upcoming</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="contact.html" class="nav-cta">Book / Inquire</a></li>
+    </ul>
+    <button class="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ══ PAGE HERO ══ -->
+<div class="page-hero container">
+  <span class="section-label">What's Next</span>
+  <h1>Upcoming <span class="gradient-text">Drops</span><br>& Plans</h1>
+  <p>There's a lot in the works. Stay locked in.</p>
+</div>
+
+<section class="section" style="padding-top: 40px;">
+  <div class="container">
+
+    <!-- Next Drop Card -->
+    <div class="next-drop">
+      <div class="orb orb-purple"></div>
+      <div class="orb orb-pink"></div>
+      <div class="next-drop-inner">
+        <div class="live-pill"><span class="dot"></span> In the works</div>
+        <h2>Next Drop <span class="gradient-text">Coming Soon</span></h2>
+        <p class="nd-sub">
+          Something new is being cooked. Drop the release date below and the countdown will run automatically.
+          <!-- Replace TBD with your actual release date once confirmed -->
+        </p>
+
+        <div class="countdown" id="countdown">
+          <div class="cd-box"><div class="cd-num" id="cd-days">--</div><div class="cd-label">Days</div></div>
+          <div class="cd-box"><div class="cd-num" id="cd-hours">--</div><div class="cd-label">Hours</div></div>
+          <div class="cd-box"><div class="cd-num" id="cd-mins">--</div><div class="cd-label">Mins</div></div>
+          <div class="cd-box"><div class="cd-num" id="cd-secs">--</div><div class="cd-label">Secs</div></div>
+        </div>
+        <p style="color: var(--muted); font-size: 0.78rem; font-family: 'Space Mono', monospace; margin-bottom: 24px;">
+          📝 Set a target date in the script below to activate the countdown
+        </p>
+
+        <a href="https://instagram.com/rayaankmusic" target="_blank" class="btn btn-primary">
+          📸 Follow for Updates
+        </a>
+      </div>
+    </div>
+
+    <!-- Upcoming Projects -->
+    <span class="section-label">In the Pipeline</span>
+    <h2 style="margin-bottom: 36px;">Future <span class="gradient-text">Projects</span></h2>
+
+    <div class="projects-list">
+
+      <div class="project-row">
+        <div class="project-num">01</div>
+        <div class="project-info">
+          <div class="project-type">Single</div>
+          <h3>Untitled Single #2</h3>
+          <p>The follow-up to Lovesick. Details TBA — replace this with your actual next single info.</p>
+        </div>
+        <span class="status-badge status-production">In Production</span>
+      </div>
+
+      <div class="project-row">
+        <div class="project-num">02</div>
+        <div class="project-info">
+          <div class="project-type">EP / Project</div>
+          <h3>Debut EP — Title TBA</h3>
+          <p>A collection of tracks that tell a bigger story. Working on the sound and tracklist.</p>
+        </div>
+        <span class="status-badge status-planned">Planned</span>
+      </div>
+
+      <div class="project-row">
+        <div class="project-num">03</div>
+        <div class="project-info">
+          <div class="project-type">Collaboration</div>
+          <h3>Feature / Collab TBA</h3>
+          <p>Working with other artists — stay tuned for announcements.</p>
+        </div>
+        <span class="status-badge status-tba">TBA</span>
+      </div>
+
+      <div class="project-row">
+        <div class="project-num">04</div>
+        <div class="project-info">
+          <div class="project-type">Visual</div>
+          <h3>Music Video / Visual Content</h3>
+          <p>Visual content to accompany the music. More details coming soon.</p>
+        </div>
+        <span class="status-badge status-tba">TBA</span>
+      </div>
+
+      <div class="project-row" style="border-style: dashed; opacity: 0.5;">
+        <div class="project-num">+</div>
+        <div class="project-info">
+          <div class="project-type">Placeholder</div>
+          <h3>Add Your Next Project Here</h3>
+          <p>Copy one of the rows above and fill in your details.</p>
+        </div>
+        <span class="status-badge status-tba">TBA</span>
+      </div>
+
+    </div>
+
+    <!-- Vision Board -->
+    <div style="margin-top: 80px;">
+      <span class="section-label">The Bigger Picture</span>
+      <h2>Long-Term <span class="gradient-text">Vision</span></h2>
+
+      <div class="vision-grid">
+        <div class="vision-card">
+          <div class="v-icon">🎙️</div>
+          <h4>Build the Catalog</h4>
+          <p>Drop consistently. Build a discography that represents the full range of the sound — from emotional to high energy.</p>
+        </div>
+        <div class="vision-card">
+          <div class="v-icon">🌍</div>
+          <h4>Grow the Audience</h4>
+          <p>Reach people around the world who connect with the music. Every listener matters, from day one.</p>
+        </div>
+        <div class="vision-card">
+          <div class="v-icon">🎤</div>
+          <h4>Live Shows</h4>
+          <p>Eventually take it to the stage. Performing the music live is part of the plan — whenever the time is right.</p>
+        </div>
+        <div class="vision-card">
+          <div class="v-icon">🤝</div>
+          <h4>Collaborations</h4>
+          <p>Work with producers, artists, and creatives that align with the vision. The right features can create magic.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notify -->
+    <div class="notify-bar">
+      <h3>Be First to <span class="gradient-text">Know</span></h3>
+      <p>Follow on Instagram for drop announcements, behind-the-scenes, and more.</p>
+      <a href="https://instagram.com/rayaankmusic" target="_blank" class="btn btn-primary">
+        📸 @rayaankmusic
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">RAY<span>AAN</span></div>
+        <p class="footer-desc">Independent artist. Music for the ones who feel everything.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="music.html">Music</a></li>
+          <li><a href="plans.html">Upcoming</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="https://open.spotify.com/artist/6nurqNt57IxtcXSIciyk6d" target="_blank">Spotify</a></li>
+          <li><a href="https://instagram.com/rayaankmusic" target="_blank">Instagram</a></li>
+          <li><a href="contact.html">Business Inquiries</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Rayaan. All rights reserved.</span>
+      <div class="social-links">
+        <a href="https://open.spotify.com/artist/6nurqNt57IxtcXSIciyk6d" target="_blank" title="Spotify">🎵</a>
+        <a href="https://instagram.com/rayaankmusic" target="_blank" title="Instagram">📸</a>
+        <a href="contact.html" title="Email">✉️</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="nav.js"></script>
+<script>
+  // ── Countdown Timer ──
+  // 👇 Change this to your actual release date:  "YYYY-MM-DDTHH:MM:SS"
+  const RELEASE_DATE = null; // e.g. "2025-09-01T00:00:00"
+
+  function updateCountdown() {
+    if (!RELEASE_DATE) return;
+    const target = new Date(RELEASE_DATE).getTime();
+    const now    = new Date().getTime();
+    const diff   = target - now;
+    if (diff <= 0) {
+      document.getElementById('countdown').innerHTML = '<span style="color:var(--accent2);font-size:1.4rem;font-family:var(--mono)">Out Now 🎉</span>';
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    document.getElementById('cd-days').textContent  = String(d).padStart(2,'0');
+    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-mins').textContent  = String(m).padStart(2,'0');
+    document.getElementById('cd-secs').textContent  = String(s).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>
+</body>
+</html>
