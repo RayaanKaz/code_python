@@ -6,6 +6,10 @@
   <title>Rayaan — Official</title>
   <link rel="stylesheet" href="style.css" />
   <style>
+    /* =========================================
+       HOME — Page-specific styles
+       ========================================= */
+
     /* ── Hero ── */
     .hero {
       min-height: 100vh;
@@ -15,375 +19,722 @@
       overflow: hidden;
       padding-top: var(--nav-h);
     }
-    .hero .orb { width: 600px; height: 600px; }
-    .hero .orb-purple { top: -100px; right: -180px; }
-    .hero .orb-pink   { bottom: -100px; left: -100px; }
 
+    /* Layered backgrounds */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .hero-bg .dot-bg { opacity: 0.6; }
+    .hero-orb-1 {
+      width: 700px; height: 700px;
+      top: -200px; right: -150px;
+      background: radial-gradient(circle, rgba(29,78,216,0.38) 0%, transparent 65%);
+    }
+    .hero-orb-2 {
+      width: 400px; height: 400px;
+      bottom: -100px; left: -80px;
+      background: radial-gradient(circle, rgba(26,58,143,0.3) 0%, transparent 70%);
+    }
+    .hero-scanline {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,20,0.03) 3px,
+        rgba(0,0,20,0.03) 4px
+      );
+      pointer-events: none;
+    }
+
+    /* Floating notes container */
+    #floatWrap {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    /* Main hero layout */
     .hero-inner {
       display: grid;
       grid-template-columns: 1fr 1fr;
       align-items: center;
-      gap: 60px;
-      width: 100%;
+      gap: 48px;
       position: relative;
-      z-index: 1;
+      z-index: 2;
+      padding: 60px 0 80px;
     }
 
-    .hero-eyebrow {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.75rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 16px;
-    }
-
-    .hero h1 { margin-bottom: 24px; }
-
-    .hero-sub {
-      color: var(--muted);
-      font-size: 1.1rem;
-      max-width: 460px;
-      margin-bottom: 36px;
-    }
-
-    .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
-
-    .latest-badge {
+    /* Left text block */
+    .hero-tag {
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      padding: 8px 16px 8px 8px;
-      margin-bottom: 32px;
-      font-size: 0.82rem;
-    }
-    .latest-badge .dot {
-      width: 8px; height: 8px; background: var(--accent2); border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%,100% { opacity: 1; transform: scale(1); }
-      50%      { opacity: 0.4; transform: scale(0.7); }
+      font-family: var(--ff-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sky);
+      margin-bottom: 24px;
     }
 
-    .hero-visual {
-      display: flex;
-      justify-content: center;
-    }
-    .hero-photo-frame {
+    .hero-name {
+      font-size: clamp(4.5rem, 11vw, 9rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 0.92;
+      color: var(--t1);
+      text-shadow: 0 0 80px rgba(59,130,246,0.5), 0 0 160px rgba(29,78,216,0.25);
+      margin-bottom: 12px;
       position: relative;
-      width: 380px;
-      aspect-ratio: 3/4;
     }
-    .hero-photo-frame .photo-placeholder { width: 100%; height: 100%; border-radius: var(--radius-lg); font-size: 0.85rem; }
-    .hero-photo-frame::before {
+    .hero-name .underscore {
+      color: var(--electric);
+      animation: blink-dot 1.4s ease-in-out infinite;
+    }
+
+    /* Sound wave bars (hero) */
+    .soundwave {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 44px;
+      margin: 20px 0 28px;
+    }
+    .sw {
+      width: 3px;
+      border-radius: 3px;
+      background: linear-gradient(to top, var(--cobalt), var(--sky));
+      transform-origin: bottom;
+      animation: sw-pulse var(--d, 0.65s) ease-in-out infinite alternate;
+      animation-delay: var(--dl, 0s);
+    }
+
+    /* Lovesick badge */
+    .hero-drop-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(29,78,216,0.2);
+      border: 1px solid var(--border-hi);
+      border-radius: 100px;
+      padding: 9px 18px;
+      font-size: 0.85rem;
+      margin-bottom: 32px;
+      backdrop-filter: blur(8px);
+    }
+    .live-dot {
+      width: 8px; height: 8px;
+      background: var(--sky);
+      border-radius: 50%;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .live-dot::after {
       content: '';
       position: absolute;
-      inset: -2px;
-      border-radius: calc(var(--radius-lg) + 2px);
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      z-index: -1;
+      inset: -3px;
+      border-radius: 50%;
+      border: 1.5px solid var(--sky);
+      animation: pulse-ring 1.5s ease-out infinite;
     }
-    .floating-card {
+    .hero-drop-badge strong { color: var(--sky); }
+
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    /* Right — Vinyl scene */
+    .hero-right {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .vinyl-scene {
+      position: relative;
+      width: 360px;
+      height: 360px;
+    }
+
+    /* Outer glow rings */
+    .vinyl-ring {
       position: absolute;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      inset: -30px;
+      border-radius: 50%;
+      border: 1px solid rgba(59,130,246,0.12);
+      animation: pulse-ring 3s ease-out infinite;
+    }
+    .vinyl-ring-2 {
+      animation-delay: 1.5s;
+      inset: -55px;
+    }
+
+    /* The vinyl record */
+    .vinyl {
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, #0a1628 0%, #0a1628 24%,
+          transparent 25%, transparent 28%,
+          rgba(59,130,246,0.06) 28%, rgba(59,130,246,0.06) 29%,
+          transparent 29%, transparent 33%,
+          rgba(59,130,246,0.05) 33%, rgba(59,130,246,0.05) 34%,
+          transparent 34%, transparent 38%,
+          rgba(59,130,246,0.04) 38%, rgba(59,130,246,0.04) 39%,
+          transparent 39%, transparent 43%,
+          rgba(59,130,246,0.04) 43%, rgba(59,130,246,0.04) 44%,
+          transparent 44%, transparent 48%,
+          rgba(59,130,246,0.03) 48%, rgba(59,130,246,0.03) 49%,
+          transparent 49%, transparent 53%,
+          rgba(59,130,246,0.03) 53%, rgba(59,130,246,0.03) 54%,
+          transparent 54%, transparent 58%,
+          rgba(59,130,246,0.03) 58%, rgba(59,130,246,0.03) 59%,
+          transparent 59%, transparent 63%,
+          rgba(59,130,246,0.03) 63%, rgba(59,130,246,0.03) 64%,
+          transparent 64%, #050f20 100%),
+        linear-gradient(145deg, #060e24 0%, #020810 100%);
+      box-shadow:
+        0 0 0 1px rgba(59,130,246,0.1),
+        0 0 60px rgba(29,78,216,0.45),
+        0 0 120px rgba(29,78,216,0.2),
+        inset 0 0 40px rgba(0,0,0,0.6);
+      animation: vinyl-spin 14s linear infinite;
+      position: relative;
+    }
+    #heroVinyl:hover { animation-duration: 3s; }
+
+    /* Center label */
+    .vinyl-label {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 130px; height: 130px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: var(--layer);
+      border: 2px solid rgba(59,130,246,0.2);
+      box-shadow: 0 0 20px rgba(29,78,216,0.4);
+    }
+    .vinyl-label .ph { border-radius: 50%; border: none; font-size: 0.65rem; }
+
+    /* Center hole */
+    .vinyl-hole {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 14px; height: 14px;
+      background: var(--ink);
+      border-radius: 50%;
+      z-index: 2;
+      border: 1px solid rgba(59,130,246,0.3);
+    }
+
+    /* Floating info card on vinyl */
+    .vinyl-card {
+      position: absolute;
+      background: rgba(9,24,48,0.85);
+      border: 1px solid var(--border-hi);
+      border-radius: 14px;
       padding: 12px 16px;
       backdrop-filter: blur(12px);
+      z-index: 5;
     }
-    .fc-spotify {
-      bottom: 40px; left: -50px;
+    .vc-track {
+      bottom: -20px; left: -60px;
       display: flex; align-items: center; gap: 10px;
     }
-    .fc-spotify .sp-icon {
-      width: 36px; height: 36px; background: #1DB954; border-radius: 50%;
+    .vc-track .vc-icon {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, var(--cobalt), var(--electric));
+      border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
       font-size: 1rem;
+      flex-shrink: 0;
     }
-    .fc-spotify .sp-text strong { display: block; font-size: 0.85rem; }
-    .fc-spotify .sp-text span  { font-size: 0.72rem; color: var(--muted); }
-    .fc-new {
-      top: 40px; right: -40px;
+    .vc-track strong { display: block; font-size: 0.85rem; font-family: var(--ff-head); }
+    .vc-track span { font-size: 0.7rem; color: var(--t3); font-family: var(--ff-mono); }
+    .vc-year {
+      top: -16px; right: -20px;
       text-align: center;
     }
-    .fc-new .tag {
-      font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--accent); font-family: 'Space Mono', monospace; margin-bottom: 4px;
-    }
-    .fc-new .title { font-size: 0.9rem; font-weight: 600; }
-    .fc-new .year  { font-size: 0.72rem; color: var(--muted); }
+    .vc-year .y-label { font-family: var(--ff-mono); font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sky); }
+    .vc-year .y-num   { font-family: var(--ff-head); font-size: 1.3rem; font-weight: 800; color: var(--t1); }
 
-    /* ── Featured Track ── */
-    .track-feature {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 48px;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
+    /* Scroll cue */
+    .scroll-cue {
+      position: absolute;
+      bottom: 32px; left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 32px;
+      gap: 8px;
+      z-index: 2;
+    }
+    .scroll-cue span {
+      font-family: var(--ff-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--t4);
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--t4), transparent);
+      animation: wave-bob 2s ease-in-out infinite;
+    }
+
+    /* =========================================
+       NOW PLAYING SECTION
+       ========================================= */
+    .now-playing-section {
+      background: var(--depth);
       position: relative;
       overflow: hidden;
     }
-    .track-feature::before {
+
+    .np-wrap {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 40px;
+      background: var(--mid);
+      border: 1px solid var(--border-hi);
+      border-radius: var(--r-xl);
+      padding: 44px 52px;
+      position: relative;
+      overflow: hidden;
+    }
+    .np-wrap::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--electric), var(--sky), transparent);
     }
-    .track-art {
-      width: 110px; height: 110px;
+    .np-wrap::after {
+      content: '"LOVESICK"';
+      position: absolute;
+      right: 40px; top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--ff-head);
+      font-size: 7rem;
+      font-weight: 800;
+      color: rgba(59,130,246,0.04);
+      letter-spacing: -0.04em;
+      pointer-events: none;
+      white-space: nowrap;
     }
-    .track-art .photo-placeholder { width: 100%; height: 100%; border-radius: var(--radius); }
-    .track-info .track-label {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
-      color: var(--accent); margin-bottom: 8px;
-    }
-    .track-info h3 { font-size: 1.8rem; margin-bottom: 4px; }
-    .track-info .track-meta { color: var(--muted); font-size: 0.88rem; }
-    .track-actions { display: flex; flex-direction: column; gap: 10px; }
 
-    /* ── Stats ── */
-    .stats-row {
+    .np-art {
+      width: 100px; height: 100px;
+      border-radius: var(--r);
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: var(--glow-sm);
+    }
+    .np-art .ph { border-radius: var(--r); }
+
+    .np-info .np-tag {
+      font-family: var(--ff-mono);
+      font-size: 0.65rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--sky);
+      margin-bottom: 8px;
+    }
+    .np-info h3 {
+      font-size: 2rem;
+      margin-bottom: 6px;
+    }
+    .np-info .np-meta { color: var(--t3); font-size: 0.88rem; }
+
+    /* Progress bar (decorative) */
+    .np-progress {
+      margin-top: 16px;
+      height: 3px;
+      background: var(--layer);
+      border-radius: 3px;
+      overflow: hidden;
+      max-width: 280px;
+    }
+    .np-progress-fill {
+      height: 100%;
+      width: 38%;
+      background: linear-gradient(90deg, var(--cobalt), var(--sky));
+      border-radius: 3px;
+      position: relative;
+    }
+    .np-progress-fill::after {
+      content: '';
+      position: absolute;
+      right: -4px; top: 50%;
+      transform: translateY(-50%);
+      width: 10px; height: 10px;
+      background: var(--sky);
+      border-radius: 50%;
+      box-shadow: var(--glow-sm);
+    }
+
+    .np-actions { display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+
+    /* =========================================
+       SECTIONS TEASER  (3 portal cards)
+       ========================================= */
+    .portals {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-top: 80px;
+      grid-template-columns: repeat(3,1fr);
+      gap: 22px;
+      margin-top: 52px;
     }
-    .stat-card {
-      background: var(--bg2);
+
+    .portal {
+      position: relative;
+      border-radius: var(--r-lg);
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 36px;
-      text-align: center;
+      overflow: hidden;
+      padding: 36px 30px 32px;
+      background: var(--depth);
+      transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      cursor: default;
     }
-    .stat-card .num {
-      font-size: 2.8rem;
+    .portal::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(29,78,216,0.12) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .portal:hover {
+      border-color: var(--border-hi);
+      transform: translateY(-5px);
+      box-shadow: 0 20px 60px rgba(29,78,216,0.3);
+    }
+    .portal:hover::before { opacity: 1; }
+
+    .portal-num {
+      font-family: var(--ff-head);
+      font-size: 5rem;
+      font-weight: 800;
+      color: rgba(59,130,246,0.07);
+      line-height: 1;
+      margin-bottom: 8px;
+      letter-spacing: -0.05em;
+    }
+    .portal-icon {
+      font-size: 1.8rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .portal h3 { font-size: 1.2rem; margin-bottom: 10px; }
+    .portal p  { color: var(--t3); font-size: 0.88rem; line-height: 1.65; margin-bottom: 20px; }
+    .portal-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--ff-head);
+      font-size: 0.82rem;
       font-weight: 700;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      font-family: 'Space Mono', monospace;
-    }
-    .stat-card p { color: var(--muted); font-size: 0.88rem; margin-top: 6px; }
-
-    /* ── Teaser grid ── */
-    .teaser-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-top: 50px;
-    }
-    .teaser-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 30px;
-      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
-    }
-    .teaser-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--accent);
-      box-shadow: 0 12px 50px var(--glow);
-    }
-    .teaser-icon {
-      width: 50px; height: 50px;
-      background: rgba(168,85,247,0.12);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem;
-      margin-bottom: 18px;
-    }
-    .teaser-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
-    .teaser-card p  { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
-    .teaser-card .card-link {
-      display: inline-flex; align-items: center; gap: 6px;
-      color: var(--accent); font-size: 0.85rem; font-weight: 600;
-      margin-top: 18px;
+      color: var(--sky);
+      letter-spacing: 0.02em;
       transition: gap 0.2s;
     }
-    .teaser-card .card-link:hover { gap: 10px; }
+    .portal-link:hover { gap: 12px; }
 
-    @media (max-width: 900px) {
-      .hero-inner { grid-template-columns: 1fr; text-align: center; }
-      .hero-sub { margin: 0 auto 36px; }
-      .hero-buttons { justify-content: center; }
-      .hero-visual { display: none; }
-      .track-feature { grid-template-columns: 1fr; text-align: center; }
-      .track-actions { flex-direction: row; justify-content: center; }
-      .stats-row { grid-template-columns: 1fr; }
-      .teaser-grid { grid-template-columns: 1fr; }
+    /* =========================================
+       CTA BAND
+       ========================================= */
+    .cta-band {
+      position: relative;
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      padding: 72px 60px;
+      text-align: center;
+      margin: 0;
     }
-    @media (max-width: 600px) {
-      .stats-row { grid-template-columns: 1fr 1fr; }
+    .cta-band-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #050e2a 0%, #091830 50%, #071228 100%);
+    }
+    .cta-band-bg .dot-bg { opacity: 0.4; }
+    .cta-orb-1 { width: 400px; height: 400px; top: -150px; left: -100px; }
+    .cta-orb-2 { width: 350px; height: 350px; bottom: -120px; right: -80px; }
+    .cta-band-border {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--r-xl);
+      border: 1px solid var(--border-hi);
+      pointer-events: none;
+    }
+    .cta-band-inner { position: relative; z-index: 1; }
+    .cta-band h2 { margin-bottom: 16px; }
+    .cta-band p  { color: var(--t2); font-size: 1.05rem; max-width: 480px; margin: 0 auto 36px; }
+    .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    /* =========================================
+       RESPONSIVE
+       ========================================= */
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; text-align: center; gap: 48px; }
+      .hero-tag { justify-content: center; }
+      .hero-drop-badge { text-align: left; }
+      .hero-actions { justify-content: center; }
+      .soundwave { justify-content: center; }
+      .hero-right { display: none; }
+      .np-wrap { grid-template-columns: 1fr; text-align: center; padding: 32px; }
+      .np-progress { margin: 16px auto; }
+      .np-actions { flex-direction: row; justify-content: center; }
+      .portals { grid-template-columns: 1fr; }
+      .cta-band { padding: 52px 28px; }
     }
   </style>
 </head>
 <body>
 
-<!-- ══ NAVIGATION ══ -->
+<!-- ═══════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════ -->
 <nav>
   <div class="container nav-inner">
-    <a href="index.html" class="nav-logo">RAY<span>AAN</span></a>
+    <a href="index.html" class="nav-logo">
+      <div class="eq-mini" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <span class="logo-name">RAYAAN<span class="logo-dot">.</span></span>
+    </a>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="music.html">Music</a></li>
       <li><a href="plans.html">Upcoming</a></li>
       <li><a href="contact.html">Contact</a></li>
-      <li><a href="contact.html" class="nav-cta">Book / Inquire</a></li>
+      <li class="nav-cta-desktop"><a href="contact.html" class="nav-cta-btn">Book &amp; Inquire</a></li>
     </ul>
-    <button class="hamburger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
-<!-- ══ HERO ══ -->
+<!-- ═══════════════════════════════════════
+     HERO
+═══════════════════════════════════════ -->
 <section class="hero">
-  <div class="orb orb-purple"></div>
-  <div class="orb orb-pink"></div>
-  <div class="container">
-    <div class="hero-inner">
+  <div class="hero-bg">
+    <div class="dot-bg"></div>
+    <div class="orb hero-orb-1"></div>
+    <div class="orb hero-orb-2"></div>
+    <div class="hero-scanline"></div>
+  </div>
 
-      <div class="hero-content">
-        <div class="latest-badge">
-          <span class="dot"></span>
-          <span>Latest drop — <strong>Lovesick</strong> out now</span>
-        </div>
-        <p class="hero-eyebrow">Official Artist Page</p>
-        <h1>RAYAAN<span class="gradient-text">.</span></h1>
-        <p class="hero-sub">
-          Music that feels like 3am thoughts, heartbreak, and growing up all at once.
-          Follow the journey.
-        </p>
-        <div class="hero-buttons">
-          <a href="music.html" class="btn btn-primary">
-            <span>▶</span> Listen Now
-          </a>
-          <a href="plans.html" class="btn btn-outline">
-            Upcoming Drops
-          </a>
-        </div>
+  <div id="floatWrap" aria-hidden="true"></div>
+
+  <div class="container hero-inner">
+
+    <!-- Left -->
+    <div class="hero-left">
+      <div class="hero-tag">
+        <div class="eq-mini" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        Official Artist Page
       </div>
 
-      <div class="hero-visual">
-        <div class="hero-photo-frame">
-          <div class="photo-placeholder">
-            <span class="icon">📷</span>
-            <span>Add artist photo here<br><small>Recommended: 3:4 portrait</small></span>
-          </div>
+      <h1 class="hero-name">RAYAAN<span class="underscore">_</span></h1>
 
-          <div class="floating-card fc-spotify">
-            <div class="sp-icon">🎵</div>
-            <div class="sp-text">
-              <strong>On Spotify</strong>
-              <span>@rayaankmusic</span>
+      <!-- Animated sound wave -->
+      <div class="soundwave" aria-hidden="true">
+        <div class="sw" style="height:16px; --d:.55s; --dl:.00s"></div>
+        <div class="sw" style="height:30px; --d:.62s; --dl:.07s"></div>
+        <div class="sw" style="height:22px; --d:.48s; --dl:.14s"></div>
+        <div class="sw" style="height:40px; --d:.70s; --dl:.05s"></div>
+        <div class="sw" style="height:28px; --d:.58s; --dl:.11s"></div>
+        <div class="sw" style="height:44px; --d:.65s; --dl:.03s"></div>
+        <div class="sw" style="height:32px; --d:.52s; --dl:.09s"></div>
+        <div class="sw" style="height:38px; --d:.68s; --dl:.16s"></div>
+        <div class="sw" style="height:20px; --d:.60s; --dl:.06s"></div>
+        <div class="sw" style="height:34px; --d:.57s; --dl:.13s"></div>
+        <div class="sw" style="height:26px; --d:.72s; --dl:.02s"></div>
+        <div class="sw" style="height:42px; --d:.63s; --dl:.10s"></div>
+        <div class="sw" style="height:18px; --d:.50s; --dl:.08s"></div>
+        <div class="sw" style="height:36px; --d:.66s; --dl:.15s"></div>
+        <div class="sw" style="height:24px; --d:.54s; --dl:.04s"></div>
+        <div class="sw" style="height:14px; --d:.59s; --dl:.12s"></div>
+      </div>
+
+      <div class="hero-drop-badge">
+        <span class="live-dot"></span>
+        <span>Out now —</span>
+        <strong>Lovesick</strong>
+        <span style="color:var(--t4)">· 2025</span>
+      </div>
+
+      <div class="hero-actions">
+        <a href="music.html" class="btn btn-primary">▶ &nbsp;Listen Now</a>
+        <a href="plans.html" class="btn btn-ghost">What's Next &nbsp;→</a>
+      </div>
+    </div>
+
+    <!-- Right — Vinyl -->
+    <div class="hero-right">
+      <div class="vinyl-scene">
+        <div class="vinyl-ring orb"></div>
+        <div class="vinyl-ring vinyl-ring-2 orb"></div>
+
+        <div class="vinyl" id="heroVinyl" title="Hover to speed up">
+          <div class="vinyl-label">
+            <div class="ph" style="border-radius:50%;">
+              <span class="ph-icon">🎨</span>
+              <span>Cover<br>art</span>
             </div>
           </div>
+          <div class="vinyl-hole"></div>
+        </div>
 
-          <div class="floating-card fc-new">
-            <div class="tag">New Single</div>
-            <div class="title">Lovesick</div>
-            <div class="year">2025</div>
+        <div class="vinyl-card vc-track">
+          <div class="vc-icon">♫</div>
+          <div>
+            <strong>Lovesick</strong>
+            <span>On Spotify</span>
           </div>
         </div>
-      </div>
 
-    </div>
-  </div>
-</section>
-
-<!-- ══ FEATURED TRACK ══ -->
-<section class="section">
-  <div class="container">
-    <span class="section-label">Featured Track</span>
-
-    <div class="track-feature">
-      <div class="track-art">
-        <div class="photo-placeholder">
-          <span class="icon">🎨</span>
-          <span style="font-size:0.65rem">Cover art</span>
+        <div class="vinyl-card vc-year">
+          <div class="y-label">Debut</div>
+          <div class="y-num">2025</div>
         </div>
       </div>
-      <div class="track-info">
-        <p class="track-label">Latest Single</p>
+    </div>
+
+  </div><!-- /hero-inner -->
+
+  <div class="scroll-cue">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- Wave divider -->
+<div class="wave-sep" style="background:var(--ink); margin-bottom:-2px;">
+  <svg viewBox="0 0 1440 90" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:90px;">
+    <path d="M0,45 C180,90 360,0 540,45 C720,90 900,0 1080,45 C1260,90 1380,20 1440,45 L1440,90 L0,90 Z" fill="#05101f"/>
+  </svg>
+</div>
+
+<!-- ═══════════════════════════════════════
+     NOW PLAYING
+═══════════════════════════════════════ -->
+<section class="section now-playing-section">
+  <div class="orb orb-ocean" style="width:500px;height:300px;top:-100px;right:-100px;opacity:0.4;"></div>
+  <div class="container">
+    <div class="label-pill reveal">♪ &nbsp;Featured Track</div>
+    <h2 class="reveal reveal-delay-1" style="margin-bottom:36px;">Now <span class="gradient-text">Playing</span></h2>
+
+    <div class="np-wrap reveal reveal-delay-2">
+      <div class="np-art">
+        <div class="ph" style="width:100px;height:100px;border-radius:var(--r);">
+          <span class="ph-icon">🎨</span>
+        </div>
+      </div>
+
+      <div class="np-info">
+        <div class="np-tag">Latest Single · 2025</div>
         <h3>Lovesick</h3>
-        <p class="track-meta">Released 2025 &nbsp;·&nbsp; Single</p>
+        <div class="np-meta">Rayaan &nbsp;·&nbsp; Independent Release</div>
+        <div class="np-progress">
+          <div class="np-progress-fill"></div>
+        </div>
       </div>
-      <div class="track-actions">
+
+      <div class="np-actions">
         <a href="https://open.spotify.com/artist/6nurqNt57IxtcXSIciyk6d" target="_blank" class="btn btn-primary">
-          <span>🎵</span> Spotify
+          🎵 &nbsp;Spotify
         </a>
-        <a href="music.html" class="btn btn-outline">All Music</a>
-      </div>
-    </div>
-
-    <!-- Stats -->
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="num">2025</div>
-        <p>Debut Year</p>
-      </div>
-      <div class="stat-card">
-        <div class="num">∞</div>
-        <p>More drops coming</p>
-      </div>
-      <div class="stat-card">
-        <div class="num">100%</div>
-        <p>Independent artist</p>
+        <a href="music.html" class="btn btn-ghost">All Music</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══ SITE TEASER ══ -->
-<section class="section" style="padding-top: 0;">
-  <div class="container">
-    <span class="section-label">Explore</span>
-    <h2>Everything <span class="gradient-text">Rayaan</span></h2>
+<!-- Wave divider -->
+<div class="wave-sep" style="background:var(--depth);">
+  <svg viewBox="0 0 1440 70" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:70px;">
+    <path d="M0,35 C360,0 720,70 1080,35 C1260,17 1380,50 1440,35 L1440,70 L0,70 Z" fill="#020814"/>
+  </svg>
+</div>
 
-    <div class="teaser-grid">
-      <div class="teaser-card">
-        <div class="teaser-icon">🎵</div>
-        <h3>Music</h3>
-        <p>Every release, single, and project — all in one place. Stream on your platform of choice.</p>
-        <a href="music.html" class="card-link">View releases →</a>
-      </div>
-      <div class="teaser-card">
-        <div class="teaser-icon">👤</div>
+<!-- ═══════════════════════════════════════
+     PORTALS  (site navigation)
+═══════════════════════════════════════ -->
+<section class="section" style="background:var(--ink); padding-top:60px;">
+  <div class="container">
+    <div class="label-pill reveal">✦ &nbsp;Explore</div>
+    <h2 class="reveal reveal-delay-1">The <span class="gradient-text">Universe</span></h2>
+
+    <div class="portals">
+      <a href="about.html" class="portal reveal reveal-delay-1" style="text-decoration:none;">
+        <div class="portal-num">01</div>
+        <span class="portal-icon">👤</span>
         <h3>About</h3>
-        <p>Learn about the story behind the music, the influences, and the vision.</p>
-        <a href="about.html" class="card-link">Read more →</a>
-      </div>
-      <div class="teaser-card">
-        <div class="teaser-icon">🗓️</div>
+        <p>The story, the sound, the vision. Where it started and where it's going.</p>
+        <span class="portal-link">Read more &nbsp;→</span>
+      </a>
+      <a href="music.html" class="portal reveal reveal-delay-2" style="text-decoration:none;">
+        <div class="portal-num">02</div>
+        <span class="portal-icon">🎵</span>
+        <h3>Music</h3>
+        <p>Every release, every single, every drop. Stream from wherever you listen.</p>
+        <span class="portal-link">Browse releases &nbsp;→</span>
+      </a>
+      <a href="plans.html" class="portal reveal reveal-delay-3" style="text-decoration:none;">
+        <div class="portal-num">03</div>
+        <span class="portal-icon">🗓️</span>
         <h3>Upcoming</h3>
-        <p>Future drops, projects, and plans. Stay locked in — there's a lot in the works.</p>
-        <a href="plans.html" class="card-link">See what's next →</a>
+        <p>Future drops, projects, collabs in the pipeline. Stay locked in.</p>
+        <span class="portal-link">See what's next &nbsp;→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     CTA BAND
+═══════════════════════════════════════ -->
+<section class="section" style="padding: 100px 28px;">
+  <div class="container">
+    <div class="cta-band reveal">
+      <div class="cta-band-bg">
+        <div class="dot-bg"></div>
+        <div class="orb orb-blue cta-orb-1"></div>
+        <div class="orb orb-sky cta-orb-2"></div>
+      </div>
+      <div class="cta-band-border"></div>
+      <div class="cta-band-inner">
+        <div class="label-pill" style="margin: 0 auto 22px;">✦ &nbsp;Business &amp; Bookings</div>
+        <h2>Work with <span class="gradient-text">Rayaan</span></h2>
+        <p>Features, collabs, placements, press — the inbox is open.</p>
+        <div class="cta-btns">
+          <a href="contact.html" class="btn btn-primary">Get in Touch</a>
+          <a href="https://instagram.com/rayaankmusic" target="_blank" class="btn btn-ghost">📸 &nbsp;@rayaankmusic</a>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══ FOOTER ══ -->
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
 <footer>
+  <div class="foot-glow"></div>
   <div class="container">
-    <div class="footer-inner">
-      <div>
-        <div class="footer-logo">RAY<span>AAN</span></div>
-        <p class="footer-desc">Independent artist. Music for the ones who feel everything.</p>
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="brand-name">RAYAAN<span>.</span></div>
+        <p>Independent artist. Music for the ones who feel everything too deeply.</p>
       </div>
-      <div class="footer-col">
-        <h4>Navigate</h4>
+      <div class="foot-col">
+        <h5>Navigate</h5>
         <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="about.html">About</a></li>
@@ -392,8 +743,8 @@
           <li><a href="contact.html">Contact</a></li>
         </ul>
       </div>
-      <div class="footer-col">
-        <h4>Connect</h4>
+      <div class="foot-col">
+        <h5>Connect</h5>
         <ul>
           <li><a href="https://open.spotify.com/artist/6nurqNt57IxtcXSIciyk6d" target="_blank">Spotify</a></li>
           <li><a href="https://instagram.com/rayaankmusic" target="_blank">Instagram</a></li>
@@ -401,9 +752,9 @@
         </ul>
       </div>
     </div>
-    <div class="footer-bottom">
+    <div class="foot-bottom">
       <span>© 2025 Rayaan. All rights reserved.</span>
-      <div class="social-links">
+      <div class="foot-socials">
         <a href="https://open.spotify.com/artist/6nurqNt57IxtcXSIciyk6d" target="_blank" title="Spotify">🎵</a>
         <a href="https://instagram.com/rayaankmusic" target="_blank" title="Instagram">📸</a>
         <a href="contact.html" title="Email">✉️</a>
@@ -413,5 +764,9 @@
 </footer>
 
 <script src="nav.js"></script>
+<script>
+  // Floating music notes in hero
+  spawnFloatingNotes('floatWrap');
+</script>
 </body>
 </html>

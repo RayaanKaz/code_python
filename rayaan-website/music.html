@@ -6,309 +6,409 @@
   <title>Music — Rayaan</title>
   <link rel="stylesheet" href="style.css" />
   <style>
+    /* ─── Music page ─── */
+
+    /* ── Featured release (big hero card) ── */
+    .feature-release {
+      position: relative;
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      margin-bottom: 72px;
+      border: 1px solid var(--border-hi);
+      background: var(--mid);
+    }
+    .feature-release::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--cobalt), var(--sky), var(--mist));
+    }
+
+    /* BIG background title */
+    .feature-release .bg-title {
+      position: absolute;
+      right: -10px; bottom: -20px;
+      font-family: var(--ff-head);
+      font-size: clamp(80px, 14vw, 160px);
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      color: rgba(59,130,246,0.05);
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      line-height: 1;
+    }
+
+    .feature-inner {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .feature-art {
+      width: 260px;
+      aspect-ratio: 1;
+    }
+    .feature-art .ph { width: 100%; height: 100%; border-radius: 0; }
+
+    .feature-info {
+      padding: 44px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .feature-info .fi-tag {
+      font-family: var(--ff-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--sky);
+      margin-bottom: 12px;
+    }
+    .feature-info h2 { font-size: clamp(1.8rem, 4vw, 3rem); margin-bottom: 10px; }
+    .feature-info .fi-meta { color: var(--t3); font-size: 0.9rem; margin-bottom: 18px; }
+    .feature-info .fi-desc { color: var(--t2); font-size: 0.95rem; line-height: 1.7; margin-bottom: 28px; max-width: 420px; }
+    .feature-links { display: flex; gap: 12px; flex-wrap: wrap; }
+
     /* ── Filter tabs ── */
     .filter-tabs {
-      display: flex; gap: 10px; flex-wrap: wrap;
-      margin: 32px 0 48px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
     }
-    .filter-btn {
-      padding: 8px 22px;
+    .f-tab {
+      padding: 8px 20px;
       border-radius: 100px;
-      background: var(--bg2);
+      background: var(--depth);
       border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 0.85rem;
+      color: var(--t3);
+      font-family: var(--ff-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
       cursor: pointer;
       transition: all 0.2s;
-      font-family: inherit;
     }
-    .filter-btn:hover, .filter-btn.active {
-      background: rgba(168,85,247,0.12);
-      border-color: var(--accent);
-      color: var(--accent);
+    .f-tab:hover, .f-tab.active {
+      background: rgba(29,78,216,0.2);
+      border-color: var(--border-hi);
+      color: var(--sky);
     }
 
-    /* ── Release grid ── */
-    .releases-grid {
+    /* ── Release shelf ── */
+    .release-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 28px;
+      gap: 26px;
+      margin-bottom: 80px;
     }
 
-    .release-card {
-      background: var(--bg2);
+    .rel-card {
+      background: var(--depth);
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
+      border-radius: var(--r-lg);
       overflow: hidden;
-      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
     }
-    .release-card:hover {
-      transform: translateY(-6px);
-      border-color: var(--accent);
-      box-shadow: 0 16px 60px var(--glow);
+    .rel-card:hover {
+      border-color: var(--border-hi);
+      transform: translateY(-6px) rotate(-0.5deg);
+      box-shadow: 0 20px 60px rgba(29,78,216,0.35), var(--glow-sm);
     }
 
-    .release-art {
+    .rel-art {
       width: 100%;
       aspect-ratio: 1;
       position: relative;
       overflow: hidden;
     }
-    .release-art .photo-placeholder {
-      width: 100%; height: 100%;
-      border-radius: 0;
-      font-size: 0.8rem;
-    }
-    .release-art .play-overlay {
-      position: absolute; inset: 0;
-      background: rgba(0,0,0,0.6);
-      display: flex; align-items: center; justify-content: center;
+    .rel-art .ph { width: 100%; height: 100%; border-radius: 0; }
+
+    /* Hover overlay */
+    .rel-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(5,16,31,0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       opacity: 0;
-      transition: opacity 0.2s;
+      transition: opacity 0.25s;
+      backdrop-filter: blur(4px);
     }
-    .release-card:hover .play-overlay { opacity: 1; }
-    .play-btn {
-      width: 56px; height: 56px;
+    .rel-card:hover .rel-overlay { opacity: 1; }
+    .play-circle {
+      width: 60px; height: 60px;
+      background: linear-gradient(135deg, var(--cobalt), var(--sky));
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem;
-      box-shadow: 0 4px 24px var(--glow);
-      cursor: pointer;
-      transition: transform 0.15s;
+      font-size: 1.4rem;
+      box-shadow: 0 0 30px rgba(59,130,246,0.6);
+      transition: transform 0.2s;
     }
-    .play-btn:hover { transform: scale(1.1); }
+    .play-circle:hover { transform: scale(1.12); }
 
-    .release-meta {
-      padding: 20px 22px 22px;
+    .rel-meta {
+      padding: 18px 20px 20px;
     }
-    .release-type {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
+    .rel-type {
+      font-family: var(--ff-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 6px;
+      color: var(--sky);
+      margin-bottom: 5px;
     }
-    .release-meta h3 { font-size: 1.1rem; margin-bottom: 4px; }
-    .release-meta .release-date { color: var(--muted); font-size: 0.82rem; margin-bottom: 16px; }
-    .release-links { display: flex; gap: 8px; flex-wrap: wrap; }
-    .stream-btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 6px 14px;
-      border-radius: 100px;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      font-size: 0.78rem;
-      color: var(--text);
-      transition: all 0.2s;
-      cursor: pointer;
-    }
-    .stream-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* ── Featured release (hero card) ── */
-    .release-featured {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      overflow: hidden;
-      margin-bottom: 60px;
-      position: relative;
-    }
-    .release-featured::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-    }
-    .rf-art { position: relative; }
-    .rf-art .photo-placeholder { width: 100%; height: 100%; border-radius: 0; }
-    .rf-info {
-      padding: 40px;
-      display: flex; flex-direction: column; justify-content: center;
-    }
-    .rf-info .release-type { margin-bottom: 10px; }
-    .rf-info h2 { font-size: 2.2rem; margin-bottom: 8px; }
-    .rf-info .rf-date { color: var(--muted); margin-bottom: 18px; font-size: 0.9rem; }
-    .rf-info p { color: var(--muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 24px; }
-    .rf-info .stream-row { display: flex; gap: 10px; flex-wrap: wrap; }
-
-    /* ── Platform placeholder ── */
-    .platforms {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 48px;
-      text-align: center;
-      margin-top: 80px;
-    }
-    .platforms h3 { margin-bottom: 8px; }
-    .platforms p  { color: var(--muted); margin-bottom: 32px; }
-    .platform-icons { display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; }
-    .platform-pill {
-      display: flex; align-items: center; gap: 10px;
-      background: var(--bg3);
+    .rel-meta h3 { font-size: 1.05rem; margin-bottom: 4px; }
+    .rel-meta .rel-year { color: var(--t3); font-size: 0.82rem; margin-bottom: 14px; }
+    .stream-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+    .sp {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--mid);
       border: 1px solid var(--border);
       border-radius: 100px;
-      padding: 10px 20px;
-      font-size: 0.88rem;
+      padding: 5px 12px;
+      font-size: 0.75rem;
+      color: var(--t2);
       transition: all 0.2s;
     }
-    .platform-pill:hover { border-color: var(--accent); color: var(--accent); }
-    .platform-pill .pi { font-size: 1.2rem; }
+    .sp:hover { border-color: var(--electric); color: var(--sky); }
 
-    /* ── Placeholder card ── */
-    .release-placeholder {
-      background: var(--bg2);
-      border: 2px dashed var(--border);
-      border-radius: var(--radius-lg);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
+    /* Placeholder cards (future releases) */
+    .rel-placeholder {
+      background: var(--depth);
+      border: 1.5px dashed var(--border);
+      border-radius: var(--r-lg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      padding: 40px 24px;
       gap: 10px;
-      color: var(--muted);
-      min-height: 300px;
+      padding: 40px 20px;
+      min-height: 280px;
+      color: var(--t4);
       transition: border-color 0.2s;
     }
-    .release-placeholder:hover { border-color: var(--accent); }
-    .release-placeholder .icon { font-size: 2rem; opacity: 0.4; }
-    .release-placeholder p { font-size: 0.8rem; font-family: 'Space Mono', monospace; }
+    .rel-placeholder:hover { border-color: var(--border-hi); }
+    .rel-placeholder .rp-icon { font-size: 2rem; opacity: 0.35; }
+    .rel-placeholder p { font-size: 0.75rem; font-family: var(--ff-mono); }
 
-    @media (max-width: 900px) {
-      .releases-grid { grid-template-columns: 1fr 1fr; }
-      .release-featured { grid-template-columns: 1fr; }
-      .rf-art { height: 260px; }
+    /* ── Streaming platforms ── */
+    .platforms-section {
+      background: var(--mid);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 56px;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
     }
-    @media (max-width: 560px) {
-      .releases-grid { grid-template-columns: 1fr; }
+    .platforms-section::before {
+      content: '♫';
+      position: absolute;
+      right: 40px; top: 20px;
+      font-size: 120px;
+      color: rgba(59,130,246,0.04);
+      pointer-events: none;
+    }
+    .platforms-section h3 { margin-bottom: 10px; }
+    .platforms-section > p { color: var(--t3); margin-bottom: 36px; max-width: 380px; margin-left: auto; margin-right: auto; }
+
+    .platform-list {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .plat-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--layer);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 22px;
+      font-family: var(--ff-head);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--t1);
+      transition: all 0.22s;
+    }
+    .plat-btn:hover {
+      border-color: var(--electric);
+      background: rgba(29,78,216,0.15);
+      color: var(--sky);
+      transform: translateY(-2px);
+      box-shadow: var(--glow-sm);
+    }
+    .plat-btn .pi { font-size: 1.2rem; }
+    .plat-btn .add-link {
+      font-size: 0.65rem;
+      color: var(--t4);
+      font-family: var(--ff-mono);
+    }
+
+    @media (max-width: 860px) {
+      .feature-inner { grid-template-columns: 1fr; }
+      .feature-art { width: 100%; }
+      .feature-info { padding: 30px; }
+      .release-grid { grid-template-columns: 1fr 1fr; }
+      .platforms-section { padding: 36px 24px; }
+    }
+    @media (max-width: 580px) {
+      .release-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<!-- ══ NAV ══ -->
 <nav>
   <div class="container nav-inner">
-    <a href="index.html" class="nav-logo">RAY<span>AAN</span></a>
+    <a href="index.html" class="nav-logo">
+      <div class="eq-mini" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <span class="logo-name">RAYAAN<span class="logo-dot">.</span></span>
+    </a>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="music.html">Music</a></li>
       <li><a href="plans.html">Upcoming</a></li>
       <li><a href="contact.html">Contact</a></li>
-      <li><a href="contact.html" class="nav-cta">Book / Inquire</a></li>
+      <li class="nav-cta-desktop"><a href="contact.html" class="nav-cta-btn">Book &amp; Inquire</a></li>
     </ul>
-    <button class="hamburger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
-<!-- ══ PAGE HERO ══ -->
-<div class="page-hero container">
-  <span class="section-label">Discography</span>
-  <h1>The <span class="gradient-text">Music</span></h1>
-  <p>Every drop, single, and project from Rayaan. Stream anywhere.</p>
+<div class="page-top">
+  <div class="orb orb-blue" style="width:500px;height:500px;top:-200px;right:-200px;opacity:0.45;"></div>
+  <div class="dot-bg" style="position:absolute;inset:0;opacity:0.35;pointer-events:none;"></div>
+  <div class="page-top-bg-num" aria-hidden="true">02</div>
+  <div class="container">
+    <div class="label-pill">🎵 &nbsp;Discography</div>
+    <h1>The <span class="gradient-text">Music</span></h1>
+    <p class="sub">Every release. Stream it wherever you listen.</p>
+  </div>
 </div>
 
-<section class="section" style="padding-top: 40px;">
+<!-- Wave -->
+<div class="wave-sep" style="background:var(--ink);">
+  <svg viewBox="0 0 1440 60" fill="none" preserveAspectRatio="none" style="width:100%;height:60px;">
+    <path d="M0,0 C360,60 900,0 1440,40 L1440,60 L0,60 Z" fill="#05101f"/>
+  </svg>
+</div>
+
+<!-- ═══ RELEASES ═══ -->
+<section class="section" style="background:var(--depth); padding-top:60px;">
   <div class="container">
 
     <!-- Featured -->
-    <span class="section-label">Latest Release</span>
-
-    <div class="release-featured">
-      <div class="rf-art">
-        <div class="photo-placeholder">
-          <span class="icon">🎨</span>
-          <span>Cover art<br><small>1:1 square recommended</small></span>
+    <div class="label-pill reveal">✦ &nbsp;Latest Release</div>
+    <div class="feature-release reveal reveal-delay-1">
+      <span class="bg-title" aria-hidden="true">LOVESICK</span>
+      <div class="feature-inner">
+        <div class="feature-art">
+          <div class="ph" style="width:260px;height:260px;border-radius:0;">
+            <span class="ph-icon">🎨</span>
+            <span>Cover art<br><small>1:1 square</small></span>
+          </div>
         </div>
-      </div>
-      <div class="rf-info">
-        <div class="release-type">Single · 2025</div>
-        <h2>Lovesick</h2>
-        <div class="rf-date">Released 2025</div>
-        <p>
-          The debut single from Rayaan. A track about that feeling when you can't get someone out of your head —
-          even when you know you should. Raw, emotional, and honest.
-        </p>
-        <div class="stream-row">
-          <a href="https://open.spotify.com/artist/6nurqNt57IxtcXSIciyk6d" target="_blank" class="btn btn-primary">
-            🎵 Stream on Spotify
-          </a>
-          <a href="#platforms" class="btn btn-outline">More Platforms</a>
+        <div class="feature-info">
+          <div class="fi-tag">♩ Latest Single · 2025</div>
+          <h2>Lovesick</h2>
+          <div class="fi-meta">Rayaan &nbsp;·&nbsp; Independent &nbsp;·&nbsp; 2025</div>
+          <p class="fi-desc">
+            The debut single — a raw, honest track about that person you can't stop thinking about
+            even when you know you should. Emotional and direct.
+          </p>
+          <div class="feature-links">
+            <a href="https://open.spotify.com/artist/6nurqNt57IxtcXSIciyk6d" target="_blank" class="btn btn-primary">🎵 &nbsp;Stream on Spotify</a>
+            <a href="#all-platforms" class="btn btn-ghost">More platforms</a>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Filter -->
-    <div class="filter-tabs">
-      <button class="filter-btn active">All</button>
-      <button class="filter-btn">Singles</button>
-      <button class="filter-btn">EPs</button>
-      <button class="filter-btn">Albums</button>
+    <!-- Tabs -->
+    <div class="filter-tabs reveal">
+      <button class="f-tab active">All</button>
+      <button class="f-tab">Singles</button>
+      <button class="f-tab">EPs</button>
+      <button class="f-tab">Albums</button>
     </div>
 
     <!-- Grid -->
-    <div class="releases-grid">
+    <div class="release-grid" id="releaseGrid">
 
-      <!-- Existing release -->
-      <div class="release-card">
-        <div class="release-art">
-          <div class="photo-placeholder">
-            <span class="icon">🎨</span>
-            <span>Lovesick cover</span>
+      <!-- Lovesick -->
+      <div class="rel-card reveal reveal-delay-1">
+        <div class="rel-art">
+          <div class="ph" style="width:100%;height:100%;border-radius:0;">
+            <span class="ph-icon">🎨</span>
+            <span>Lovesick<br>cover art</span>
           </div>
-          <div class="play-overlay">
-            <a href="https://open.spotify.com/artist/6nurqNt57IxtcXSIciyk6d" target="_blank" class="play-btn">▶</a>
+          <div class="rel-overlay">
+            <a href="https://open.spotify.com/artist/6nurqNt57IxtcXSIciyk6d" target="_blank" class="play-circle">▶</a>
           </div>
         </div>
-        <div class="release-meta">
-          <div class="release-type">Single</div>
+        <div class="rel-meta">
+          <div class="rel-type">Single</div>
           <h3>Lovesick</h3>
-          <div class="release-date">2025</div>
-          <div class="release-links">
-            <a href="https://open.spotify.com/artist/6nurqNt57IxtcXSIciyk6d" target="_blank" class="stream-btn">🎵 Spotify</a>
+          <div class="rel-year">2025</div>
+          <div class="stream-pills">
+            <a href="https://open.spotify.com/artist/6nurqNt57IxtcXSIciyk6d" target="_blank" class="sp">🎵 Spotify</a>
           </div>
         </div>
       </div>
 
-      <!-- Future release placeholders -->
-      <div class="release-placeholder">
-        <span class="icon">🎵</span>
-        <strong style="font-size: 0.9rem;">Coming Soon</strong>
+      <!-- Placeholder 2 -->
+      <div class="rel-placeholder reveal reveal-delay-2">
+        <span class="rp-icon">🎵</span>
+        <strong style="font-size:.9rem;color:var(--t3);">Coming Soon</strong>
         <p>Next single<br>placeholder</p>
       </div>
 
-      <div class="release-placeholder">
-        <span class="icon">🎵</span>
-        <strong style="font-size: 0.9rem;">Coming Soon</strong>
-        <p>Add future releases<br>here</p>
+      <!-- Placeholder 3 -->
+      <div class="rel-placeholder reveal reveal-delay-3">
+        <span class="rp-icon">🎵</span>
+        <strong style="font-size:.9rem;color:var(--t3);">Coming Soon</strong>
+        <p>Add future<br>releases here</p>
       </div>
 
     </div>
 
-    <!-- Platforms section -->
-    <div class="platforms" id="platforms">
-      <h3>Stream Rayaan <span class="gradient-text">Everywhere</span></h3>
-      <p>Available on all major platforms</p>
-      <div class="platform-icons">
-        <a href="https://open.spotify.com/artist/6nurqNt57IxtcXSIciyk6d" target="_blank" class="platform-pill">
+    <!-- Platforms -->
+    <div class="platforms-section reveal" id="all-platforms">
+      <div class="label-pill" style="margin:0 auto 20px;">Stream Everywhere</div>
+      <h3>Rayaan on <span class="gradient-text">Every Platform</span></h3>
+      <p>Pick where you listen — the music is there.</p>
+
+      <div class="platform-list">
+        <a href="https://open.spotify.com/artist/6nurqNt57IxtcXSIciyk6d" target="_blank" class="plat-btn">
           <span class="pi">🎵</span> Spotify
         </a>
-        <div class="platform-pill">
-          <span class="pi">🎵</span> Apple Music <small style="color:var(--muted);margin-left:4px;">(add link)</small>
+        <div class="plat-btn">
+          <span class="pi">🎵</span> Apple Music
+          <span class="add-link">(add link)</span>
         </div>
-        <div class="platform-pill">
-          <span class="pi">🎵</span> SoundCloud <small style="color:var(--muted);margin-left:4px;">(add link)</small>
+        <div class="plat-btn">
+          <span class="pi">🎵</span> SoundCloud
+          <span class="add-link">(add link)</span>
         </div>
-        <div class="platform-pill">
-          <span class="pi">🎵</span> YouTube Music <small style="color:var(--muted);margin-left:4px;">(add link)</small>
+        <div class="plat-btn">
+          <span class="pi">▶</span> YouTube Music
+          <span class="add-link">(add link)</span>
         </div>
-        <div class="platform-pill">
-          <span class="pi">🎵</span> Tidal <small style="color:var(--muted);margin-left:4px;">(add link)</small>
+        <div class="plat-btn">
+          <span class="pi">🎵</span> Tidal
+          <span class="add-link">(add link)</span>
+        </div>
+        <div class="plat-btn">
+          <span class="pi">🎵</span> Amazon Music
+          <span class="add-link">(add link)</span>
         </div>
       </div>
     </div>
@@ -316,16 +416,16 @@
   </div>
 </section>
 
-<!-- ══ FOOTER ══ -->
 <footer>
+  <div class="foot-glow"></div>
   <div class="container">
-    <div class="footer-inner">
-      <div>
-        <div class="footer-logo">RAY<span>AAN</span></div>
-        <p class="footer-desc">Independent artist. Music for the ones who feel everything.</p>
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="brand-name">RAYAAN<span>.</span></div>
+        <p>Independent artist. Music for the ones who feel everything too deeply.</p>
       </div>
-      <div class="footer-col">
-        <h4>Navigate</h4>
+      <div class="foot-col">
+        <h5>Navigate</h5>
         <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="about.html">About</a></li>
@@ -334,8 +434,8 @@
           <li><a href="contact.html">Contact</a></li>
         </ul>
       </div>
-      <div class="footer-col">
-        <h4>Connect</h4>
+      <div class="foot-col">
+        <h5>Connect</h5>
         <ul>
           <li><a href="https://open.spotify.com/artist/6nurqNt57IxtcXSIciyk6d" target="_blank">Spotify</a></li>
           <li><a href="https://instagram.com/rayaankmusic" target="_blank">Instagram</a></li>
@@ -343,12 +443,12 @@
         </ul>
       </div>
     </div>
-    <div class="footer-bottom">
+    <div class="foot-bottom">
       <span>© 2025 Rayaan. All rights reserved.</span>
-      <div class="social-links">
-        <a href="https://open.spotify.com/artist/6nurqNt57IxtcXSIciyk6d" target="_blank" title="Spotify">🎵</a>
-        <a href="https://instagram.com/rayaankmusic" target="_blank" title="Instagram">📸</a>
-        <a href="contact.html" title="Email">✉️</a>
+      <div class="foot-socials">
+        <a href="https://open.spotify.com/artist/6nurqNt57IxtcXSIciyk6d" target="_blank">🎵</a>
+        <a href="https://instagram.com/rayaankmusic" target="_blank">📸</a>
+        <a href="contact.html">✉️</a>
       </div>
     </div>
   </div>
@@ -356,10 +456,9 @@
 
 <script src="nav.js"></script>
 <script>
-  // Filter tabs
-  document.querySelectorAll('.filter-btn').forEach(btn => {
+  document.querySelectorAll('.f-tab').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.f-tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     });
   });
